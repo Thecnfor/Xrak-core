@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { SEOProvider } from "../src/utils/seo/Provider";
 import "../src/observability/otel";
 import { ObservabilityProvider } from "../src/observability/Provider";
-import { AnalyticsProvider } from "../src/observability/analytics/Provider";
 import AppProviders from "../src/lib/providers/AppProviders";
 import { Suspense } from "react";
 import { Toaster } from "../src/features/toaster/Toaster";
@@ -145,14 +143,8 @@ export default function RootLayout({
           <SessionRoot>
             {/* 懒加载边界：防止 SSR 时阻塞，fallback 为空 */}
             <Suspense fallback={null}>
-              {/* 分析提供者：注入埋点与事件上报，指定中文语言 */}
-              <AnalyticsProvider locale="zh-CN">
-                {/* 全局业务提供者：主题、权限、国际化等统一入口 */}
-                <AppProviders>
-                  {/* SEO 提供者：动态生成 meta、结构化数据，指定中文语言 */}
-                  <SEOProvider locale="zh-CN">{children}</SEOProvider>
-                </AppProviders>
-              </AnalyticsProvider>
+              {/* 全局业务提供者：统一收容主题、查询、吐司、SEO 与分析 */}
+              <AppProviders locale="zh-CN">{children}</AppProviders>
             </Suspense>
             {/* 全局通知吐司：悬浮提示消息 */}
             <Toaster />

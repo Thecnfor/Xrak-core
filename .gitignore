@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/tests
 
 # next.js
 /.next/
@@ -36,8 +37,8 @@ yarn-error.log*
 
 # vercel
 .vercel
-.trae
 .trunk
+.trae
 
 # typescript
 *.tsbuildinfo

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "idx": 1,
+      "version": "0001",
+      "when": 1731000000000,
+      "tag": "0001_init_auth",
+      "breakpoints": true
+    }
+  ]
+}

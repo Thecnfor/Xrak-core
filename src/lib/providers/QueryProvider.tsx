@@ -1,6 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 function createClient() {
   return new QueryClient({
@@ -20,5 +21,12 @@ function createClient() {
 
 export function QueryProvider({ children }: React.PropsWithChildren) {
   const client = useMemo(() => createClient(), []);
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>
+      {children}
+      {process.env.NODE_ENV === "development" ? (
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+      ) : null}
+    </QueryClientProvider>
+  );
 }

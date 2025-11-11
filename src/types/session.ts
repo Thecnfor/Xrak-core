@@ -9,11 +9,15 @@ export interface SessionCookie {
   exp: number; // 过期时间（unix 秒）
 }
 
+export type Role = "admin" | "user";
+
 export interface SessionContext {
   userId: number;
   email?: string;
   displayName?: string;
-  roles?: string[];
+  // 快速权限判断：与 roles 并存，来自数据库 users.is_admin
+  isAdmin?: boolean;
+  roles?: Role[];
   // CSRF 密钥（服务端生成并通过 /api/session 下发到客户端，仅内存持有，不入 Cookie）
   csrfSecret?: string;
   // 会话签发与过期时间（秒级时间戳），便于客户端提示与服务端校验
@@ -29,7 +33,9 @@ export interface ClientSessionData {
   userId?: string; // "0" 表示匿名会话；未赋值表示无会话
   email?: string;
   displayName?: string;
-  roles?: string[];
+  // 快速权限判断：与 roles 并存
+  isAdmin?: boolean;
+  roles?: Role[];
   expiresAt?: number; // 可选：过期时间戳（秒），仅用于客户端提示，不作为安全依据
   // 为方便在客户端开发页展示，附带 UA 哈希；生产环境不建议用于强认证
   uaHash?: string;

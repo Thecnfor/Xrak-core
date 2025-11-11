@@ -10,5 +10,5 @@ export { PersistGate } from "./PersistGate";
 export { ToasterProvider, useToaster } from "./ToasterProvider";
 export { SessionProvider, useSession } from "./SessionProvider";
 
-export { SEOProvider, useSEO } from "@/src/utils/seo/Provider";
-export { AnalyticsProvider } from "@/src/observability/analytics/Provider";
+export { SEOProvider, useSEO } from "./SEOProvider";
+export { AnalyticsProvider } from "@src/observability/analytics/Provider";

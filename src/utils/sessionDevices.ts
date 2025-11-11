@@ -1,7 +1,7 @@
 // 设备列表工具：基于 KV 的用户会话索引，输出当前用户的所有会话（设备）摘要
 // 说明：此工具仅用于开发/管理页展示设备列表；生产环境建议结合更强的设备指纹与风控。
 
-import { listUserSessions } from "@/src/services/session/kv";
+import { listUserSessions } from "@src/services/session/kv";
 
 export type DeviceSession = {
   sid: string;

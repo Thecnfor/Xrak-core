@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "../src/observability/otel";
 import { ObservabilityProvider } from "../src/observability/Provider";
 import AppProviders from "../src/lib/providers/AppProviders";
@@ -8,6 +8,7 @@ import SessionRoot from "../src/lib/providers/SessionRoot";
 import { Noto_Sans_SC, Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { defaultPageMetadata } from "../src/utils/seo";
 
 const notoSansSC = Noto_Sans_SC({
   variable: "--font-noto-sans-sc",
@@ -81,50 +82,17 @@ const sourceHanSansSCExtra = localFont({
   adjustFontFallback: false,
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  ),
-  title: {
-    default: "Xrak",
-    template: "%s · Xrak",
-  },
-  description: "Xrak — Edge-first, Serverless, AI-native",
-  applicationName: "Xrak",
-  generator: "Next.js",
-  keywords: ["Next.js", "Edge", "Serverless", "AI-native", "TurboRepo"],
-  authors: [{ name: "Xrak Team" }],
-  creator: "Xrak",
-  publisher: "Xrak",
-  alternates: {
-    canonical: "/",
-    languages: {
-      "zh-CN": "/zh-CN",
-      en: "/en",
-    },
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  openGraph: {
-    type: "website",
-    siteName: "Xrak",
-    title: "Xrak",
-    description: "Edge-first, Serverless, AI-native",
-    locale: "zh-CN",
-    url: "/",
-    images: [],
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@xrak",
-    creator: "@xrak",
-    title: "Xrak",
-    description: "Edge-first, Serverless, AI-native",
-    images: [],
-  },
-  manifest: "/manifest.webmanifest",
+// 统一使用 SEO 工具生成默认 Metadata（含 viewport 与 themeColor）
+export const metadata: Metadata = defaultPageMetadata;
+
+// 显式导出 viewport（确保移动端表现与 PWA 体验）
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+  ],
 };
 
 export default function RootLayout({

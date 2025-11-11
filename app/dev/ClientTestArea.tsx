@@ -2,10 +2,10 @@
 
 // 客户端测试面板：统一验证 Provider 与客户端上下文的协作
 import React from "react";
-import { useSession } from "@/src/lib/providers/SessionProvider";
-import { useToaster } from "@/src/lib/providers/ToasterProvider";
-import { useTheme } from "@/src/lib/providers/ThemeProvider";
-import { useAnalytics } from "@/src/observability/analytics/Provider";
+import { useSession } from "@src/lib/providers/SessionProvider";
+import { useToaster } from "@src/lib/providers/ToasterProvider";
+import { useTheme } from "@src/lib/providers/ThemeProvider";
+import { useAnalytics } from "@src/observability/analytics/Provider";
 
 export default function ClientTestArea() {
   const { session, refreshSession, setClientCookie } = useSession();

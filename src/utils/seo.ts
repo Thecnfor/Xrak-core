@@ -86,11 +86,6 @@ export function generatePageMetadata(
       description,
       images: input.images,
     },
-    viewport: {
-      width: "device-width",
-      initialScale: 1,
-    },
-    themeColor: [{ media: "(prefers-color-scheme: dark)", color: "#0a0a0a" }, { media: "(prefers-color-scheme: light)", color: "#ffffff" }],
     applicationName: config.siteName,
     category: "technology",
   };

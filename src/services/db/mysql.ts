@@ -39,6 +39,9 @@ export async function getMySQLPool(): Promise<Pool> {
     database: cfg.MYSQL_DATABASE,
     user: cfg.MYSQL_USER,
     password: cfg.MYSQL_PASSWORD,
+    // 统一连接字符集为 utf8mb4（Emoji 安全），排序规则建议在数据库层统一为 utf8mb4_0900_ai_ci
+    // 说明：mysql2 在指定 charset 后会执行 SET NAMES，保证会话层编码正确
+    charset: "utf8mb4",
     // Serverless 友好默认值：小连接池 + 队列等待
     connectionLimit: 5,
     waitForConnections: true,

@@ -1,8 +1,8 @@
 // 登录风控与限流：基于 Redis 的窗口计数与 UA 黑名单
 // 说明：避免在客户端直接暴露策略，实现于服务层，仅服务端调用。
 
-import { getRedisClient } from "@/src/services/db/redis";
-import { getLoginRateLimitConfig } from "@/src/services/security/config";
+import { getRedisClient } from "@src/services/db/redis";
+import { getLoginRateLimitConfig } from "@src/services/security/config";
 
 type RateCheckResult = {
   allowed: boolean;
@@ -18,7 +18,14 @@ async function readConfig() {
 }
 
 export async function isUserAgentDenied(uaHash?: string, userAgent?: string): Promise<boolean> {
-  const rc = await getRedisClient();
+  // 加固：Redis 客户端获取失败时直接返回未拒绝，避免抛错导致上层流程中断
+  let rc: Awaited<ReturnType<typeof getRedisClient>> | null = null;
+  try {
+    rc = await getRedisClient();
+  } catch {
+    rc = null;
+  }
+  if (!rc) return false;
   try {
     if (uaHash) {
       const hit = await rc.sIsMember("security:ua:blacklist", uaHash);
@@ -35,7 +42,14 @@ export async function isUserAgentDenied(uaHash?: string, userAgent?: string): Pr
 }
 
 export async function checkLoginRateLimit(email: string, ip: string): Promise<RateCheckResult> {
-  const rc = await getRedisClient();
+  // 加固：若 Redis 客户端不可用则直接放行（返回允许），避免 ECONNREFUSED 抛错
+  let rc: Awaited<ReturnType<typeof getRedisClient>> | null = null;
+  try {
+    rc = await getRedisClient();
+  } catch {
+    rc = null;
+  }
+  if (!rc) return { allowed: true };
   const cfg = await readConfig();
   const win = cfg.windowSeconds;
   const capEmail = cfg.maxPerEmail;

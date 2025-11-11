@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useSession } from "./SessionProvider";
-import { useAnalytics } from "@/src/observability/analytics/Provider";
+import { useAnalytics } from "@src/observability/analytics/Provider";
 
 // 客户端挂件：首次渲染时刷新会话，采集访问信息
 export function SessionBootstrap() {

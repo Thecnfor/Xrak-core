@@ -1,7 +1,7 @@
 // 安全配置服务：维护 UA 黑名单与登录限流配置（存储于 Redis）
 // 说明：供管理 API 与风控模块统一读写配置。
 
-import { getRedisClient } from "@/src/services/db/redis";
+import { getRedisClient } from "@src/services/db/redis";
 
 export type LoginRateLimitConfig = {
   windowSeconds: number;

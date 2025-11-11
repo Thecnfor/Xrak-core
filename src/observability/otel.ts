@@ -8,24 +8,37 @@ declare global {
   var __otel_sdk__: NodeSDK | undefined;
 }
 
+function isValidUrl(url?: string): boolean {
+  if (!url) return false;
+  try {
+    // new URL 既校验协议也校验结构
+    // 仅接受 http/https 端点
+    const u = new URL(url);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 function shouldInit() {
   // 仅在服务端且非 Edge 运行时初始化；必须提供有效的 OTLP 端点
   const isServer = typeof window === "undefined";
   const isEdge = process.env.NEXT_RUNTIME === "edge";
   const endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
-  const hasEndpoint = typeof endpoint === "string" && endpoint.trim().length > 0;
-  return isServer && !isEdge && hasEndpoint;
+  const hasValidEndpoint = isValidUrl(endpoint?.trim());
+  return isServer && !isEdge && hasValidEndpoint;
 }
 
 export async function initOTel() {
   if (!shouldInit()) return;
   if (global.__otel_sdk__) return;
 
-  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ERROR);
+  // 将 OpenTelemetry 诊断日志降低到 WARN，避免开发环境噪音
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
 
   try {
     const traceExporter = new OTLPTraceExporter({
-      url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
+      url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT!,
       headers: process.env.OTEL_EXPORTER_OTLP_HEADERS
         ? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
         : undefined,
@@ -35,8 +48,8 @@ export async function initOTel() {
     await sdk.start();
     global.__otel_sdk__ = sdk;
   } catch (e) {
-    // 若初始化失败（如 URL 非法），则跳过并输出警告，不阻塞页面渲染
-    console.warn("[otel] 初始化跳过：", (e as Error)?.message ?? e);
+    // 若初始化失败（如 URL 非法），则跳过并输出简洁警告，不阻塞页面渲染
+    console.warn("[otel] 初始化已跳过：", (e as Error)?.message ?? e);
   }
 }
 

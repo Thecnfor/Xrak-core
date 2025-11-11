@@ -2,7 +2,7 @@
 // 说明：此处不存储会话本体，仅记录发放与撤销事件，用于审计与问题追踪。
 
 import { eq } from "drizzle-orm";
-import { getDrizzle } from "@/src/services/db/mysql";
+import { getDrizzle } from "@src/services/db/mysql";
 import { authSessionAudit } from "@/drizzle/auth";
 
 function assertServer() {

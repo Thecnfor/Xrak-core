@@ -6,9 +6,9 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { CLIENT_COOKIE_DEFAULTS } from "@/src/config/session";
-import type { SessionData } from "@/src/types/session";
-export type { SessionData } from "@/src/types/session";
+import { CLIENT_COOKIE_DEFAULTS } from "@src/config/session";
+import type { SessionData } from "@src/types/session";
+export type { SessionData } from "@src/types/session";
 
 // 统一使用全局 SessionData 类型（src/types/session.ts）
 

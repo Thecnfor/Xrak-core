@@ -1,15 +1,15 @@
 {
-  "name": "Xrak",
-  "short_name": "Xrak",
+  "name": "XRak",
+  "short_name": "XRak",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0a0a0a",
+  "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "/icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
     }
   ]
 }

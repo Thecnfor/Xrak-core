@@ -1,5 +1,6 @@
 import { getMysql } from "@infra/db/mysql";
 import { createClient } from "redis";
+import { getEnv } from "@core/config/env";
 let started = false;
 async function publish(redis: ReturnType<typeof createClient>, payload: unknown) {
   try { await redis.publish("sys:db:broadcast", JSON.stringify(payload)); } catch {}
@@ -7,7 +8,7 @@ async function publish(redis: ReturnType<typeof createClient>, payload: unknown)
 export async function ensureHealthMonitor() {
   if (started) return;
   started = true;
-  const redis = createClient({ url: process.env.REDIS_URL });
+  const redis = createClient({ url: getEnv().REDIS_URL });
   redis.on("error", () => {});
   await redis.connect();
   async function setSnapshot(s: { status: string; at?: number; backoffMs?: number }) {

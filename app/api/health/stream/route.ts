@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "redis";
+import { getEnv } from "@core/config/env";
 import { ensureHealthMonitor } from "@server/health/monitor";
 export async function GET() {
   await ensureHealthMonitor();
   const encoder = new TextEncoder();
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      const r = createClient({ url: process.env.REDIS_URL });
+      const r = createClient({ url: getEnv().REDIS_URL });
       r.on("error", () => {});
       await r.connect();
       try {

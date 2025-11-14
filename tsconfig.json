@@ -25,7 +25,8 @@
       "@client/*": ["./src/client/*"],
       "@shared/*": ["./src/shared/*"],
       "@infra/*": ["./src/infra/*"],
-      "@features/*": ["./src/features/*"]
+      "@features/*": ["./src/features/*"],
+      "@core/*": ["./src/core/*"]
     }
   },
   "include": [

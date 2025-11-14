@@ -79,7 +79,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${sourceHanSans.variable} antialiased`}
       >
         <Suspense fallback={null}>
-          <ServerProviders>{children}</ServerProviders>
+          <ServerProviders>
+            {children}
+          </ServerProviders>
         </Suspense>
         <Toaster />
       </body>

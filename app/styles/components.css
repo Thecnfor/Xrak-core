@@ -1,0 +1,29 @@
+@utility ui-btn {
+  @apply inline-flex items-center justify-center select-none;
+  @apply px-4 py-2 rounded-md font-medium;
+  @apply bg-blue-600 text-white shadow-sm;
+  @apply transition-all duration-200 ease-[var(--ease-fluid)];
+  @apply hover:bg-blue-700 hover:shadow-md active:scale-95;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+@utility ui-card {
+  @apply rounded-lg bg-white/70 dark:bg-neutral-900/60 backdrop-blur-sm;
+  @apply shadow-sm transition-shadow duration-200 ease-[var(--ease-fluid)];
+  @apply hover:shadow-md;
+}
+
+@utility ui-input {
+  @apply w-full rounded-md px-3 py-2 text-sm;
+  @apply bg-white/80 dark:bg-neutral-900/60 backdrop-blur-sm;
+  @apply border border-neutral-300 dark:border-neutral-700;
+  @apply transition-all duration-200 ease-[var(--ease-fluid)];
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-transparent;
+}
+
+@utility ui-chip {
+  @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs;
+  @apply bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200;
+  @apply transition-colors duration-200 ease-[var(--ease-fluid)];
+}

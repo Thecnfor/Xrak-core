@@ -8,6 +8,7 @@ export default function AppEffects({ children }: { children: React.ReactNode }) 
   const setStatus = useGlobalStore((s) => s.setStatus);
   const status = useGlobalStore((s) => s.status);
   const prefs = useGlobalStore((s) => s.prefs);
+  const setScheme = useGlobalStore((s) => s.setScheme);
   useEffect(() => {
     let es: EventSource | null = null;
     let retry = 1000;
@@ -32,15 +33,28 @@ export default function AppEffects({ children }: { children: React.ReactNode }) 
   useEffect(() => { if (typeof navigator !== "undefined" && "serviceWorker" in navigator) { navigator.serviceWorker.register("/sw.js"); } }, []);
   useEffect(() => { if (status === "up") start(); else stop(); }, [status]);
   useEffect(() => {
-    const rawTheme = (prefs as Record<string, unknown>)["theme"];
-    const theme = typeof rawTheme === "string" ? rawTheme.toLowerCase() : "";
     const el = typeof document !== "undefined" ? document.documentElement : null;
     if (!el) return;
-    if (theme === "dark") el.classList.add("dark"); else el.classList.remove("dark");
+    const rawTheme = (prefs as Record<string, unknown>)["theme"];
+    const prefTheme = typeof rawTheme === "string" ? rawTheme.toLowerCase() : "";
+    if (prefTheme === "dark" || prefTheme === "light") {
+      setScheme(prefTheme as "dark" | "light");
+      if (prefTheme === "dark") el.classList.add("dark"); else el.classList.remove("dark");
+    } else {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const apply = () => {
+        const s = mq.matches ? "dark" : "light" as const;
+        setScheme(s);
+        if (s === "dark") el.classList.add("dark"); else el.classList.remove("dark");
+      };
+      apply();
+      mq.addEventListener("change", apply);
+      return () => mq.removeEventListener("change", apply);
+    }
     const title = typeof (prefs as Record<string, unknown>)["seo.title"] === "string" ? String((prefs as Record<string, unknown>)["seo.title"]) : undefined;
     const desc = typeof (prefs as Record<string, unknown>)["seo.description"] === "string" ? String((prefs as Record<string, unknown>)["seo.description"]) : undefined;
     if (title) document.title = title;
     if (desc) { let el2 = document.querySelector('meta[name="description"]'); if (!el2) { el2 = document.createElement("meta"); el2.setAttribute("name", "description"); document.head.appendChild(el2); } el2.setAttribute("content", desc); }
-  }, [prefs]);
+  }, [prefs, setScheme]);
   return <>{children}</>;
 }

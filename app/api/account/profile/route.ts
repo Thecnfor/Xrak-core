@@ -6,7 +6,7 @@ import { SESSION_COOKIE_NAME } from "@features/auth/shared/session";
 import { getMysql } from "@infra/db/mysql";
 import { withApi } from "@server/middleware/api";
 import { ok, badRequest, unauthorized } from "@server/api/respond";
-import { ensureOnce } from "../../../../src/core/services/IdempotencyService";
+import { ensureOnce } from "@core/services/IdempotencyService";
 const Schema = z.object({ displayName: z.string().min(1).max(64) });
 export async function POST(req: NextRequest) {
   return withApi(req, [], async (ctx) => {

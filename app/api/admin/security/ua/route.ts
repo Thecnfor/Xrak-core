@@ -4,7 +4,7 @@ import { addUaBlacklist, removeUaBlacklist, getUaBlacklist } from "@infra/securi
 import { withApi } from "@server/middleware/api";
 import { requireAdmin } from "@server/middleware/admin";
 import { ok } from "@server/api/respond";
-import { ensureOnce } from "../../../../../src/core/services/IdempotencyService";
+import { ensureOnce } from "@core/services/IdempotencyService";
 export async function GET(req: NextRequest) {
   return withApi(req, [requireAdmin], async () => {
     const list = await getUaBlacklist();

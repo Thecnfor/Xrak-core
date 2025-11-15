@@ -1,11 +1,8 @@
-"use client";
-
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { EffectComposer, EffectPass, RenderPass, Effect } from "postprocessing";
 
 type PixelBlastVariant = "square" | "circle" | "triangle" | "diamond";
-
 type PixelBlastProps = {
   variant?: PixelBlastVariant;
   pixelSize?: number;

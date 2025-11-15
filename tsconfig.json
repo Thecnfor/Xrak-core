@@ -26,7 +26,8 @@
       "@shared/*": ["./src/shared/*"],
       "@infra/*": ["./src/infra/*"],
       "@features/*": ["./src/features/*"],
-      "@core/*": ["./src/core/*"]
+      "@core/*": ["./src/core/*"],
+      "@app/*": ["./app/*"]
     }
   },
   "include": [

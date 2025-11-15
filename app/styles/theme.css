@@ -1,9 +1,0 @@
-@theme {
-  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
-  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 450ms;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-}

@@ -8,7 +8,12 @@ export default function AppEffects({ children }: { children: React.ReactNode }) 
   const setStatus = useGlobalStore((s) => s.setStatus);
   const status = useGlobalStore((s) => s.status);
   const prefs = useGlobalStore((s) => s.prefs);
+  const scheme = useGlobalStore((s) => s.scheme);
   const setScheme = useGlobalStore((s) => s.setScheme);
+  useEffect(() => {
+    const dispose = initStyleRuntime();
+    return () => { try { dispose(); } catch {} };
+  }, []);
   useEffect(() => {
     let es: EventSource | null = null;
     let retry = 1000;
@@ -56,5 +61,12 @@ export default function AppEffects({ children }: { children: React.ReactNode }) 
     if (title) document.title = title;
     if (desc) { let el2 = document.querySelector('meta[name="description"]'); if (!el2) { el2 = document.createElement("meta"); el2.setAttribute("name", "description"); document.head.appendChild(el2); } el2.setAttribute("content", desc); }
   }, [prefs, setScheme]);
+
+  useEffect(() => {
+    const el = typeof document !== "undefined" ? document.documentElement : null;
+    if (!el || !scheme) return;
+    if (scheme === "dark") el.classList.add("dark"); else el.classList.remove("dark");
+  }, [scheme]);
   return <>{children}</>;
 }
+import { init as initStyleRuntime } from "@app/styles/runtime";

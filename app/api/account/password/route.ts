@@ -7,7 +7,7 @@ import { getMysql } from "@infra/db/mysql";
 import { verifyPassword, hashPassword } from "@server/auth/password";
 import { withApi } from "@server/middleware/api";
 import { ok, badRequest, unauthorized, notFound, forbidden } from "@server/api/respond";
-import { ensureOnce } from "../../../../src/core/services/IdempotencyService";
+import { ensureOnce } from "@core/services/IdempotencyService";
 import { recordPasswordChanged } from "@server/auth/sessionAudit";
 const Schema = z.object({ currentPassword: z.string().min(6), newPassword: z.string().min(8) });
 export async function POST(req: NextRequest) {

@@ -4,7 +4,7 @@ import { getLoginRateLimitConfig, setLoginRateLimitConfig } from "@infra/securit
 import { withApi } from "@server/middleware/api";
 import { requireAdmin } from "@server/middleware/admin";
 import { ok, badRequest } from "@server/api/respond";
-import { ensureOnce } from "../../../../../src/core/services/IdempotencyService";
+import { ensureOnce } from "@core/services/IdempotencyService";
 export async function GET(req: NextRequest) {
   return withApi(req, [requireAdmin], async () => {
     const conf = await getLoginRateLimitConfig();

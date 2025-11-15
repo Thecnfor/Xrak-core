@@ -5,8 +5,9 @@ import "./globals.css";
 import AppProviders from "@client/providers/AppProviders";
 import { getInitialPrefs } from "@features/prefs/server/prefs";
 import { Suspense } from "react";
-import { Toaster } from "../src/features/toaster/Toaster";
-import { defaultMetadata } from "../src/core/config/seo";
+import { Toaster } from "@features/toaster/Toaster";
+import { defaultMetadata } from "@core/config/seo";
+export const runtime = "nodejs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

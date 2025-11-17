@@ -1,1 +1,0 @@
-export { getMysql } from "@infra/db/mysql";

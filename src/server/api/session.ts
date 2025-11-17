@@ -1,1 +1,0 @@
-export { getSessionFromRequest } from "@features/auth/server/api/session";

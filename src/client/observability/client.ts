@@ -1,1 +1,0 @@
-export * from "@features/telemetry/client/observability";

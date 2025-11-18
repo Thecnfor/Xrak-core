@@ -1,6 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-
-const url = process.env.REDIS_URL;
+import { REDIS } from "./config";
 
 declare global {
   var __redisClient: RedisClientType | undefined;
@@ -8,7 +7,7 @@ declare global {
 
 export async function getRedis(): Promise<RedisClientType> {
   if (!globalThis.__redisClient) {
-    const client = createClient({ url });
+    const client = createClient({ url: REDIS.URL });
     await client.connect();
     globalThis.__redisClient = client as RedisClientType;
   }

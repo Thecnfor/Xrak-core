@@ -1,3 +1,4 @@
+import { INDEXDB } from "./config"
 type Value = unknown
 
 type IndexDef = { name: string; keyPath: string | string[]; options?: IDBIndexParameters }
@@ -8,7 +9,7 @@ function isClient() {
   return typeof window !== "undefined" && typeof indexedDB !== "undefined"
 }
 
-async function openDB({ name = "app", version = 1, stores = [{ name: "kv" }] }: OpenOptions): Promise<IDBDatabase> {
+async function openDB({ name = INDEXDB.NAME, version = INDEXDB.VERSION, stores = [{ name: "kv" }] }: OpenOptions): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (!isClient()) {
       reject(new Error("IndexedDB unavailable"))

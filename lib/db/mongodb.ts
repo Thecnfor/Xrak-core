@@ -1,7 +1,5 @@
 import { MongoClient, Db } from "mongodb"
-
-const uri = process.env.MONGODB_URI
-const dbName = process.env.MONGODB_DB
+import { MONGO } from "./config"
 
 declare global {
   var __mongoClient: MongoClient | undefined
@@ -9,7 +7,7 @@ declare global {
 
 export async function getMongoClient(): Promise<MongoClient> {
   if (!globalThis.__mongoClient) {
-    const client = new MongoClient(String(uri))
+    const client = new MongoClient(String(MONGO.URI))
     await client.connect()
     globalThis.__mongoClient = client
   }
@@ -18,7 +16,7 @@ export async function getMongoClient(): Promise<MongoClient> {
 
 export async function getMongoDb(): Promise<Db> {
   const client = await getMongoClient()
-  return client.db(String(dbName))
+  return client.db(String(MONGO.DB_NAME))
 }
 
 export async function mongoHealth(): Promise<boolean> {

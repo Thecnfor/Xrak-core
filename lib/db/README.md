@@ -172,3 +172,30 @@ const data = await getOrSet("key", 3600, async () => fetchData())
 import { syncService } from "./services/sync.service"
 syncService.enqueue("updateUserConfig", { userId: 1, theme: "dark" }, "HIGH")
 ```
+
+## 一页速览
+
+- 角色分工：
+- MySQL/Prisma 负责结构化核心数据与事务
+- Redis 负责会话、热数据缓存、限流与排行榜
+- MongoDB 存个性化配置、审计详情、草稿与分析
+- IndexedDB 在浏览器侧做离线缓存与同步队列
+
+- 入口路径：
+- 适配器：`lib/db/mysql.ts`、`lib/db/prisma.ts`、`lib/db/mongodb.ts`、`lib/db/redis.ts`、`lib/db/indexdb.ts`
+- 仓储：`lib/db/repo/*`（`userRepo`、`postRepo`、`commentRepo`、`permissionRepo`、`auditRepo`）
+- 服务：`lib/db/services/*`（`cache.service`、`sync.service`）
+- 键：`lib/db/keys.ts`
+
+- 常用调用：
+- 读文章：`await postRepo.getById(1001)`
+- 写文章并回填：`await postRepo.update(1001, { title: '新标题' })`
+- 查偏好：`await userRepo.getPreferences(1)` / 存偏好：`await userRepo.savePreferences(1, payload)`
+- 管理员检查：`await userRepo.isAdmin(1)`
+- 限流：`await rateLimit(Keys.rateLimit(1, 'post_create'), 10, 3600)`
+- 队列入库：`await syncService.enqueue('updateUserConfig', { userId: 1 }, 'HIGH')`
+
+- 策略速记：
+- 读取降级：Redis → MySQL/Prisma → IndexedDB（命中下层即回填上层）
+- 同步队列：IndexedDB `syncQueue` 承载离线操作，在线批量上行，失败重试
+- 冲突处理：比较 `updatedAt`，较新覆盖；必要时标记 `conflict`

@@ -2,7 +2,8 @@ import { getPrisma } from "../prisma"
 import { getMongoDb } from "../mongodb"
 import { getRedis } from "../redis"
 import { Keys } from "../keys"
-import { Prisma } from "@prisma/client"
+import { LoginStatus } from "@prisma/client"
+import { TTL } from "../config"
 
 export const userRepo = {
   async findById(id: number) {
@@ -21,12 +22,12 @@ export const userRepo = {
         ipAddress: meta?.ip,
         userAgent: meta?.ua,
         location: meta?.location,
-        status: (meta?.status ?? "success") as Prisma.LoginStatus,
+        status: (meta?.status ?? "success") as LoginStatus,
         failureReason: meta?.reason,
       },
     })
   },
-  async setSession(sessionId: string, payload: unknown, ttlSeconds = 86400) {
+  async setSession(sessionId: string, payload: unknown, ttlSeconds = TTL.SESSION) {
     const r = await getRedis()
     await r.hSet(Keys.session(sessionId), { data: JSON.stringify(payload) })
     await r.expire(Keys.session(sessionId), ttlSeconds)

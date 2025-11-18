@@ -37,7 +37,7 @@ async function getCryptoKey() {
 export async function encrypt(plain: Uint8Array): Promise<string> {
   const key = await getCryptoKey()
   const iv = crypto.getRandomValues(new Uint8Array(12))
-  const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain)
+  const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain.buffer as ArrayBuffer)
   const out = new Uint8Array(iv.byteLength + cipher.byteLength)
   out.set(iv, 0)
   out.set(new Uint8Array(cipher), iv.byteLength)
@@ -49,6 +49,6 @@ export async function decrypt(encoded: string): Promise<Uint8Array> {
   const iv = data.subarray(0, 12)
   const body = data.subarray(12)
   const key = await getCryptoKey()
-  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, body)
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, body.buffer as ArrayBuffer)
   return new Uint8Array(plain)
 }

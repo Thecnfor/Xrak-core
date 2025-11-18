@@ -1,15 +1,14 @@
 import mysql from "mysql2/promise";
+import { MYSQL } from "./config";
 
 type Pool = mysql.Pool;
 
-const url = process.env.MYSQL_URL;
-const host = process.env.MYSQL_HOST;
-const port = process.env.MYSQL_PORT
-  ? Number(process.env.MYSQL_PORT)
-  : undefined;
-const user = process.env.MYSQL_USER;
-const password = process.env.MYSQL_PASSWORD;
-const database = process.env.MYSQL_DB;
+const url = MYSQL.URL;
+const host = MYSQL.HOST;
+const port = MYSQL.PORT;
+const user = MYSQL.USER;
+const password = MYSQL.PASSWORD;
+const database = MYSQL.DB;
 
 declare global {
   var __mysqlPool: Pool | undefined;
@@ -24,7 +23,7 @@ function createPool(): Pool {
     password,
     database,
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: MYSQL.POOL_CONNECTION_LIMIT,
   });
 }
 

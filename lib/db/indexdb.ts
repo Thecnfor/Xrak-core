@@ -41,6 +41,10 @@ export type IndexDB = {
   del: (store: string, key: IDBValidKey) => Promise<void>
   clear: (store: string) => Promise<void>
   close: () => void
+  getAll: (store: string) => Promise<Value[]>
+  count: (store: string) => Promise<number>
+  bulkSet: (store: string, entries: readonly { key: IDBValidKey; value: Value }[]) => Promise<void>
+  bulkDel: (store: string, keys: readonly IDBValidKey[]) => Promise<void>
 }
 
 export async function createIndexDB(opts?: OpenOptions): Promise<IndexDB> {
@@ -73,8 +77,52 @@ export async function createIndexDB(opts?: OpenOptions): Promise<IndexDB> {
       r.onerror = () => reject(r.error)
     })
   }
+  async function getAll(store: string): Promise<Value[]> {
+    return new Promise((resolve, reject) => {
+      const r = tx(db, store, "readonly").getAll()
+      r.onsuccess = () => resolve(r.result as Value[])
+      r.onerror = () => reject(r.error)
+    })
+  }
+  async function count(store: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const r = tx(db, store, "readonly").count()
+      r.onsuccess = () => resolve(r.result as number)
+      r.onerror = () => reject(r.error)
+    })
+  }
+  async function bulkSet(store: string, entries: readonly { key: IDBValidKey; value: Value }[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const s = tx(db, store, "readwrite")
+      let pending = entries.length
+      if (pending === 0) return resolve()
+      entries.forEach((e) => {
+        const r = s.put(e.value, e.key)
+        r.onsuccess = () => {
+          pending -= 1
+          if (pending === 0) resolve()
+        }
+        r.onerror = () => reject(r.error)
+      })
+    })
+  }
+  async function bulkDel(store: string, keys: readonly IDBValidKey[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const s = tx(db, store, "readwrite")
+      let pending = keys.length
+      if (pending === 0) return resolve()
+      keys.forEach((k) => {
+        const r = s.delete(k)
+        r.onsuccess = () => {
+          pending -= 1
+          if (pending === 0) resolve()
+        }
+        r.onerror = () => reject(r.error)
+      })
+    })
+  }
   function close() {
     db.close()
   }
-  return { get, set, del, clear, close }
+  return { get, set, del, clear, close, getAll, count, bulkSet, bulkDel }
 }

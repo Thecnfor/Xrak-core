@@ -20,3 +20,13 @@ export async function getMongoDb(): Promise<Db> {
   const client = await getMongoClient()
   return client.db(String(dbName))
 }
+
+export async function mongoHealth(): Promise<boolean> {
+  try {
+    const db = await getMongoDb()
+    await db.command({ ping: 1 })
+    return true
+  } catch {
+    return false
+  }
+}

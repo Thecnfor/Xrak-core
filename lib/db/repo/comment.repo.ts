@@ -10,4 +10,7 @@ export const commentRepo = {
   async remove(id: number) {
     return getPrisma().comment.delete({ where: { id } })
   },
+  async updateStatus(id: number, status: "pending" | "approved" | "rejected") {
+    return getPrisma().comment.update({ where: { id }, data: { status } })
+  },
 }

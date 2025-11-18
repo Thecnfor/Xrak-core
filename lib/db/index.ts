@@ -18,12 +18,16 @@ import { postRepo } from "./repo/post.repo"
 import { commentRepo } from "./repo/comment.repo"
 import { permissionRepo } from "./repo/permission.repo"
 import { auditRepo } from "./repo/audit.repo"
+import { categoryRepo } from "./repo/category.repo"
+import { tagRepo } from "./repo/tag.repo"
+import { membershipRepo } from "./repo/membership.repo"
 
 import { getOrSet, jsonGet, jsonSet, incrWithExpire, rateLimit } from "./services/cache.service"
 import { syncService } from "./services/sync.service"
 
 import { Keys } from "./core/keys"
 import { MYSQL, MONGO, REDIS, TTL, INDEXDB } from "./core/config"
+import { verifyPassword, signJWT, randomId } from "../utils/crypto"
 
 /** 适配器分组：统一管理连接与健康检查 */
 export const DB = {
@@ -41,6 +45,9 @@ export const Repo = {
   commentRepo,
   permissionRepo,
   auditRepo,
+  categoryRepo,
+  tagRepo,
+  membershipRepo,
 }
 
 /** 服务分组：缓存工具与浏览器同步队列 */
@@ -64,6 +71,7 @@ export const Config = {
 /** 透出原始命名导出，保留细粒度调用能力 */
 export { getMySQL, mysqlQuery, getPrisma, prismaHealth, getMongoClient, getMongoDb, mongoHealth, getRedis, redisPing, createIndexDB }
 export { userRepo, postRepo, commentRepo, permissionRepo, auditRepo }
+export { categoryRepo, tagRepo, membershipRepo }
 export { getOrSet, jsonGet, jsonSet, incrWithExpire, rateLimit, syncService }
 
 /** 类型导出 */
@@ -97,4 +105,136 @@ export async function healthAll(): Promise<HealthSummary> {
   }
   const indexdbOK = typeof window === "undefined" ? "client-only" : true
   return { mysql: mysqlOK, prisma: prismaOK, mongo: mongoOK, redis: redisOK, indexdb: indexdbOK }
+}
+
+export const API = {
+  users: {
+    create: userRepo.create,
+    findByEmail: userRepo.findByEmail,
+    findById: userRepo.findById,
+    isAdmin: userRepo.isAdmin,
+    recordLogin: userRepo.recordLogin,
+    getPreferences: userRepo.getPreferences,
+    savePreferences: userRepo.savePreferences,
+    setSession: userRepo.setSession,
+  },
+  posts: {
+    create: postRepo.create,
+    getById: postRepo.getById,
+    findBySlug: postRepo.findBySlug,
+    update: postRepo.update,
+    listByAuthor: postRepo.listByAuthor,
+    addCategory: postRepo.addCategory,
+    removeCategory: postRepo.removeCategory,
+    addTag: postRepo.addTag,
+    removeTag: postRepo.removeTag,
+    incrementView: postRepo.incrementView,
+    setTrendingScore: postRepo.setTrendingScore,
+    incrementTrending: postRepo.incrementTrending,
+    topTrending: postRepo.topTrending,
+  },
+  comments: {
+    create: commentRepo.create,
+    listByPost: commentRepo.listByPost,
+    remove: commentRepo.remove,
+    updateStatus: commentRepo.updateStatus,
+  },
+  categories: {
+    create: categoryRepo.create,
+    findById: categoryRepo.findById,
+    findBySlug: categoryRepo.findBySlug,
+    list: categoryRepo.list,
+    update: categoryRepo.update,
+    attachToPost: categoryRepo.attachToPost,
+    detachFromPost: categoryRepo.detachFromPost,
+  },
+  tags: {
+    create: tagRepo.create,
+    findById: tagRepo.findById,
+    findBySlug: tagRepo.findBySlug,
+    list: tagRepo.list,
+    update: tagRepo.update,
+    attachToPost: tagRepo.attachToPost,
+    detachFromPost: tagRepo.detachFromPost,
+  },
+  memberships: {
+    listTiers: membershipRepo.listTiers,
+    createTier: membershipRepo.createTier,
+    updateTier: membershipRepo.updateTier,
+    removeTier: membershipRepo.removeTier,
+    assignMembership: membershipRepo.assignMembership,
+    getActiveMembership: membershipRepo.getActiveMembership,
+    deactivateMembership: membershipRepo.deactivateMembership,
+  },
+  permissions: {
+    listByRole: permissionRepo.listByRole,
+  },
+  audit: {
+    logSummary: auditRepo.logSummary,
+    logDetail: auditRepo.logDetail,
+  },
+}
+
+/**
+ * 复合用例：跨多个存储的业务流程封装
+ * 使用示例：
+ * const result = await UseCases.auth.signIn("test@example.com", "pwd", { ip: "1.2.3.4", ua: "Mozilla" })
+ * await UseCases.profile.saveUserPreferences(1, { theme: "dark" })
+ * const post = await UseCases.posts.createWithRelations({ authorId: 1, title: "t", slug: "t", content: "..." }, [1], [2,3])
+ */
+export const UseCases = {
+  /** 登录流程：Prisma 校验用户、Redis 记录限流与会话、MySQL 记录登录历史、Prisma 更新 lastLoginAt、审计摘要 */
+  auth: {
+    async signIn(email: string, password: string, meta?: { ip?: string; ua?: string; location?: string }) {
+      const prisma = DB.prisma.getPrisma()
+      const user = await prisma.user.findUnique({ where: { email }, select: { id: true, passwordHash: true, role: true } })
+      await DB.redis.getRedis()
+      const ip = meta?.ip ?? ""
+      if (!(await verifyPassword(password, user?.passwordHash ?? ""))) {
+        if (ip) await Services.cache.incrWithExpire(Keys.loginFailed(ip), 900)
+        await API.users.recordLogin(user?.id ?? 0, { ip, ua: meta?.ua, location: meta?.location, status: "failed", reason: "invalid_credentials" })
+        await API.audit.logSummary({ action: "sign_in", module: "auth", ipAddress: ip, userAgent: meta?.ua, responseStatus: 401 })
+        return null
+      }
+      const sessionId = randomId()
+      const token = await signJWT({ sub: String(user?.id), role: user?.role })
+      await API.users.setSession(sessionId, { uid: user?.id, role: user?.role, token }, TTL.SESSION)
+      await prisma.user.update({ where: { id: user!.id }, data: { lastLoginAt: new Date() } })
+      await API.users.recordLogin(user!.id, { ip, ua: meta?.ua, location: meta?.location, status: "success" })
+      await API.audit.logSummary({ userId: user!.id, action: "sign_in", module: "auth", ipAddress: ip, userAgent: meta?.ua, responseStatus: 200 })
+      return { token, sessionId, userId: user!.id, role: user!.role }
+    },
+  },
+  /** 偏好保存：Mongo 写入并回填 Redis 缓存、审计摘要 */
+  profile: {
+    async saveUserPreferences(userId: number, preferences: Record<string, unknown>) {
+      const saved = await API.users.savePreferences(userId, preferences)
+      const r = await DB.redis.getRedis()
+      await r.hSet(Keys.userConfig(userId), Object.fromEntries(Object.entries(preferences).map(([k, v]) => [k, JSON.stringify(v)])))
+      await API.audit.logSummary({ userId, action: "save_preferences", module: "profile", responseStatus: 200 })
+      return saved
+    },
+  },
+  /** 文章创建含分类与标签：Prisma 创建、关联，多端缓存与榜单更新、审计摘要 */
+  posts: {
+    async createWithRelations(data: { authorId: number; title: string; slug: string; content: string; summary?: string; coverImage?: string; status?: "draft" | "published" | "archived" }, categoryIds: readonly number[] = [], tagIds: readonly number[] = []) {
+      const post = await API.posts.create({ ...data })
+      for (const cid of categoryIds) await API.posts.addCategory(post.id, cid)
+      for (const tid of tagIds) await API.posts.addTag(post.id, tid)
+      await Services.cache.jsonSet(Keys.postDetail(post.id), post, TTL.POST_DETAIL)
+      await API.posts.setTrendingScore(post.id, 0)
+      await API.audit.logSummary({ userId: data.authorId, action: "create_post", module: "post", requestParams: { categoryIds, tagIds, slug: data.slug }, responseStatus: 200 })
+      return post
+    },
+  },
+  /** 通用限流执行器：Redis 限流通过后执行，并写审计 */
+  rateLimited: {
+    async run(userId: number, action: string, limit: number, windowSeconds: number, exec: () => Promise<unknown>) {
+      const allowed = await Services.cache.rateLimit(Keys.rateLimit(userId, action), limit, windowSeconds)
+      await API.audit.logSummary({ userId, action, module: "rate_limited", responseStatus: allowed ? 200 : 429 })
+      if (!allowed) return { ok: false, error: "rate_limited" }
+      const out = await exec()
+      return { ok: true, data: out }
+    },
+  },
 }

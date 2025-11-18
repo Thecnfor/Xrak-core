@@ -1,9 +1,9 @@
-import { getPrisma } from "../prisma"
-import { getMongoDb } from "../mongodb"
-import { getRedis } from "../redis"
-import { Keys } from "../keys"
+import { getPrisma } from "../adapters/prisma"
+import { getMongoDb } from "../adapters/mongodb"
+import { getRedis } from "../adapters/redis"
+import { Keys } from "../core/keys"
 import { LoginStatus } from "@prisma/client"
-import { TTL } from "../config"
+import { TTL } from "../core/config"
 
 export const userRepo = {
   async findById(id: number) {

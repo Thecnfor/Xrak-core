@@ -1,5 +1,5 @@
 import { MongoClient, Db } from "mongodb"
-import { MONGO } from "./config"
+import { MONGO } from "../core/config"
 
 declare global {
   var __mongoClient: MongoClient | undefined

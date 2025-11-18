@@ -20,29 +20,29 @@
 
 ```
 // MySQL
-import { mysqlQuery, getMySQL } from "./mysql"
+import { mysqlQuery, getMySQL } from "./adapters/mysql"
 await mysqlQuery("SELECT 1")
 const pool = getMySQL()
 await pool.query("SELECT NOW()")
 
 // Prisma
-import { getPrisma, prismaHealth } from "./prisma"
+import { getPrisma, prismaHealth } from "./adapters/prisma"
 const prisma = getPrisma()
 const ok = await prismaHealth()
 
 // MongoDB
-import { getMongoDb } from "./mongodb"
+import { getMongoDb } from "./adapters/mongodb"
 const db = await getMongoDb()
 await db.collection("posts").findOne({})
 
 // Redis
-import { getRedis, redisPing } from "./redis"
+import { getRedis, redisPing } from "./adapters/redis"
 const r = await getRedis()
 await r.set("k", "v")
 await redisPing()
 
 // IndexedDB（浏览器）
-import { createIndexDB } from "./indexdb"
+import { createIndexDB } from "./adapters/indexdb"
 const idb = await createIndexDB({
   name: "BlogDB",
   version: 1,
@@ -140,10 +140,10 @@ const dec = await decrypt(enc)
 
 ## 分层架构与入口
 
-- 适配器（Adapter）：`mysql.ts`、`prisma.ts`、`mongodb.ts`、`redis.ts`、`indexdb.ts`
+- 适配器（Adapter）：`adapters/mysql.ts`、`adapters/prisma.ts`、`adapters/mongodb.ts`、`adapters/redis.ts`、`adapters/indexdb.ts`
 - 仓储（Repository）：`repo/user.repo.ts`、`repo/post.repo.ts`、`repo/comment.repo.ts`、`repo/permission.repo.ts`、`repo/audit.repo.ts`
 - 服务（Service）：`services/cache.service.ts`、`services/sync.service.ts`
-- 键（Keys）：`keys.ts`
+- 键（Keys）：`core/keys.ts`
 
 ## 使用范式
 
@@ -173,6 +173,42 @@ import { syncService } from "./services/sync.service"
 syncService.enqueue("updateUserConfig", { userId: 1, theme: "dark" }, "HIGH")
 ```
 
+## 分层快速开发示例（端到端）
+
+```
+import { postRepo } from "./repo/post.repo"
+import { userRepo } from "./repo/user.repo"
+import { rateLimit, getOrSet } from "./services/cache.service"
+import { Keys } from "./core/keys"
+
+const postId = 1001
+const userId = 1
+
+const post = await getOrSet(Keys.postDetail(postId), 3600, async () => postRepo.getById(postId))
+const updated = await postRepo.update(postId, { title: "新标题" })
+
+const canCreate = await rateLimit(Keys.rateLimit(userId, "post_create"), 10, 3600)
+const isAdmin = await userRepo.isAdmin(userId)
+```
+
+## 适配器直连对比（Raw SQL 与 ORM）
+
+```
+import { mysqlQuery } from "./adapters/mysql"
+import { getPrisma } from "./adapters/prisma"
+
+await mysqlQuery("SELECT NOW()")
+const prisma = getPrisma()
+await prisma.user.findUnique({ where: { id: 1 } })
+```
+
+## MySQL vs Prisma
+
+- MySQL 是数据库与驱动，`getMySQL()`、`mysqlQuery()` 直连执行 SQL
+- Prisma 是类型安全 ORM 与迁移工具，维护 `schema.prisma`，用 `pnpm prisma:generate` 生成客户端
+- Prisma 支持多种数据库，并非仅给 MySQL 建表；本项目主库由 Prisma 管理
+- 默认选 Prisma；遇到需要原生语法或特殊优化时用 MySQL 适配器
+
 ## 一页速览
 
 - 角色分工：
@@ -182,10 +218,10 @@ syncService.enqueue("updateUserConfig", { userId: 1, theme: "dark" }, "HIGH")
 - IndexedDB 在浏览器侧做离线缓存与同步队列
 
 - 入口路径：
-- 适配器：`lib/db/mysql.ts`、`lib/db/prisma.ts`、`lib/db/mongodb.ts`、`lib/db/redis.ts`、`lib/db/indexdb.ts`
+- 适配器：`lib/db/adapters/mysql.ts`、`lib/db/adapters/prisma.ts`、`lib/db/adapters/mongodb.ts`、`lib/db/adapters/redis.ts`、`lib/db/adapters/indexdb.ts`
 - 仓储：`lib/db/repo/*`（`userRepo`、`postRepo`、`commentRepo`、`permissionRepo`、`auditRepo`）
 - 服务：`lib/db/services/*`（`cache.service`、`sync.service`）
-- 键：`lib/db/keys.ts`
+- 键：`lib/db/core/keys.ts`
 
 - 常用调用：
 - 读文章：`await postRepo.getById(1001)`

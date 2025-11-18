@@ -1,4 +1,4 @@
-import { getPrisma } from "../prisma"
+import { getPrisma } from "../adapters/prisma"
 
 export const commentRepo = {
   async create(data: { postId: number; userId: number; content: string; parentId?: number }) {

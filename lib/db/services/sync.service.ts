@@ -1,5 +1,5 @@
-import { createIndexDB } from "../indexdb"
-import { INDEXDB } from "../config"
+import { createIndexDB } from "../adapters/indexdb"
+import { INDEXDB } from "../core/config"
 
 type Priority = "HIGH" | "MEDIUM" | "LOW"
 

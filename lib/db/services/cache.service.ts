@@ -1,4 +1,4 @@
-import { getRedis } from "../redis"
+import { getRedis } from "../adapters/redis"
 
 export async function getOrSet<T>(key: string, ttl: number, fetcher: () => Promise<T>): Promise<T> {
   const redis = await getRedis()

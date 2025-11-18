@@ -1,4 +1,4 @@
-import { INDEXDB } from "./config"
+import { INDEXDB } from "../core/config"
 type Value = unknown
 
 type IndexDef = { name: string; keyPath: string | string[]; options?: IDBIndexParameters }

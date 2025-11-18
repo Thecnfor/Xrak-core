@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-import { MYSQL } from "./config";
+import { MYSQL } from "../core/config";
 
 type Pool = mysql.Pool;
 

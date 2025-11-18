@@ -1,8 +1,8 @@
-import { getPrisma } from "../prisma"
-import { getRedis } from "../redis"
-import { Keys } from "../keys"
+import { getPrisma } from "../adapters/prisma"
+import { getRedis } from "../adapters/redis"
+import { Keys } from "../core/keys"
 import { jsonGet, jsonSet } from "../services/cache.service"
-import { TTL } from "../config"
+import { TTL } from "../core/config"
 import { Prisma, PostStatus } from "@prisma/client"
 
 export const postRepo = {

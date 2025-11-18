@@ -1,5 +1,5 @@
-import { getPrisma } from "../prisma"
-import { getMongoDb } from "../mongodb"
+import { getPrisma } from "../adapters/prisma"
+import { getMongoDb } from "../adapters/mongodb"
 import { Prisma } from "@prisma/client"
 
 export const auditRepo = {

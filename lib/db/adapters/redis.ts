@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { REDIS } from "./config";
+import { REDIS } from "../core/config";
 
 declare global {
   var __redisClient: RedisClientType | undefined;

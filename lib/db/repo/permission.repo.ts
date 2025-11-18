@@ -1,4 +1,4 @@
-import { getPrisma } from "../prisma"
+import { getPrisma } from "../adapters/prisma"
 
 export const permissionRepo = {
   async listByRole(role: "user" | "admin" | "super_admin") {

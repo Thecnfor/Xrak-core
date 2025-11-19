@@ -245,3 +245,43 @@
   }
 }
 /* 加载器结束 */
+
+.transition-base {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out-quad);
+}
+
+.transition-soft {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-smooth);
+}
+
+.transition-hard {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: var(--duration-slow);
+  transition-timing-function: var(--ease-out-expo);
+}
+
+.hover-scale-sm {
+  transform: scale(1);
+  transition: transform var(--duration-fast) var(--ease-smooth);
+}
+.hover-scale-sm:hover {
+  transform: scale(1.02);
+}
+
+.hover-scale-md {
+  transform: scale(1);
+  transition: transform var(--duration-base) var(--ease-out-expo);
+}
+.hover-scale-md:hover {
+  transform: scale(1.04);
+}
+
+.interactive {
+  -webkit-tap-highlight-color: transparent;
+  transition: all var(--duration-base) var(--ease-smooth);
+  will-change: transform, box-shadow, opacity;
+}

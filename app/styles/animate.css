@@ -10,6 +10,11 @@
       background-position: 350% 50%, 350% 50%;
     }
   }
+  --animate-fade-in: fadeIn var(--duration-base) var(--ease-out-expo) both;
+  --animate-fade-out: fadeOut var(--duration-base) var(--ease-out-expo) both;
+  --animate-slide-in-up: fadeInUp var(--duration-base) var(--ease-out-expo) both;
+  --animate-slide-in-down: slideInDown var(--duration-base) var(--ease-out-expo) both;
+  --animate-spin-slow: spin 3s linear infinite;
 }
 
 .animate-sidebarSlideInLeft {
@@ -82,4 +87,10 @@
 .transformCard:hover {
   transform: scale(1.03);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

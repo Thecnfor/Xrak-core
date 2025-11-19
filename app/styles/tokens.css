@@ -15,6 +15,12 @@
   --header-h: 4rem;
   --gutter-size: max(20px, calc((var(--document-width) - 68rem) / 2));
   --media-gutter-size: max(20px, calc((var(--document-width) - 1728px) / 2));
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quad: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.2, 0, 0, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
 }
 /* 默认浅色主题变量 */
 :root {
@@ -25,6 +31,8 @@
   --color-btn: rgba(0, 0, 0, 0.288);
   --color-nav: #00000007;
   color-scheme: light;
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
 /* 深色主题变量 */
@@ -39,6 +47,8 @@
   --color-shadow: #d44af742;
   --color-card: hsla(0, 0%, 100%, 0.12);
   color-scheme: dark;
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
 /* 浅色主题的自定义变量 */
@@ -52,6 +62,8 @@
   --color-nav: #00000007;
   --color-shadow: #00000014;
   --color-card: hsla(157, 100%, 50%, 0.808);
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 .bg-primary-4 {
   --tw-bg-opacity: 1;
@@ -67,6 +79,8 @@
     --color-primary-hover: #ffffff2f;
     --color-nav: #fffefe17;
     color-scheme: dark;
+    --background: var(--color-bg);
+    --foreground: var(--color-text);
   }
 }
 /* 移动端 */

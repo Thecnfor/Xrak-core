@@ -1,0 +1,247 @@
+.text-nav-mobile {
+  font-size: 1rem;
+  line-height: 1rem;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 48rem) {
+  .md\:text-nav-desktop {
+    font-size: 0.875rem;
+    line-height: 0.875rem;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+}
+
+.transition-\[background-color\2c backdrop-filter\2c left\] {
+  transition-property: background-color, left, -webkit-backdrop-filter;
+  transition-property: background-color, backdrop-filter, left;
+  transition-property: background-color, backdrop-filter, left,
+    -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+}
+
+.backdrop-blur-\[8px\] {
+  --tw-backdrop-blur: blur(8px);
+}
+.backdrop-blur-\[70px\],
+.backdrop-blur-\[8px\] {
+  -webkit-backdrop-filter: var(--tw-backdrop-blur);
+  backdrop-filter: var(--tw-backdrop-blur);
+}
+.bg-secondary-44 {
+  --tw-bg-opacity: 1;
+  background-color: hsl((0 0% 100%) / (0.44, 1));
+}
+
+/* 现代化滚动条设计 */
+* {
+  /* 全局滚动条样式 */
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+  /* 滚动条轨道 */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+  }
+  /* 滚动条滑块 */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-text);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  /* 滚动条滑块悬停效果 */
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text);
+    background-clip: content-box;
+  }
+  /* 滚动条滑块激活效果 */
+  ::-webkit-scrollbar-thumb:active {
+    background: var(--color-text);
+    background-clip: content-box;
+  }
+  /* 滚动条角落 */
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+/* Firefox滚动条样式 */
+* {
+  scrollbar-width: none;
+  scrollbar-color: var(--color-btn) transparent;
+  scrollbar-track-color: transparent;
+  /* 增加滚动条滑块圆角 */
+  scrollbar-border-radius: 50px;
+  -moz-scrollbar-border-radius: 50px;
+}
+
+/* From Uiverse.io by risabbir */
+.pattern-blue {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+      ellipse at 20% 30%,
+      rgba(138, 43, 226, 0.8) 0%,
+      rgba(138, 43, 226, 0) 60%
+    ),
+    radial-gradient(
+      ellipse at 80% 50%,
+      rgba(0, 191, 255, 0.7) 0%,
+      rgba(0, 191, 255, 0) 70%
+    ),
+    radial-gradient(
+      ellipse at 50% 80%,
+      rgba(50, 205, 50, 0.6) 0%,
+      rgba(50, 205, 50, 0) 65%
+    ),
+    linear-gradient(135deg, #000000 0%, #0a0520 100%);
+  background-blend-mode: overlay, screen, hard-light;
+  overflow: hidden;
+  animation: aurora-drift 25s infinite alternate ease-in-out;
+}
+
+.pattern-blue::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 40px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 60px
+    );
+  animation: grid-shift 20s linear infinite;
+}
+
+.pattern-blue::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    transparent 70%,
+    rgba(10, 5, 32, 0.9) 100%
+  );
+  animation: aurora-pulse 8s infinite alternate;
+}
+
+@keyframes aurora-drift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%;
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% {
+    background-position: -10% -5%, 5% 10%, 0% 15%;
+    filter: hue-rotate(30deg) brightness(1.2);
+  }
+  100% {
+    background-position: 5% 10%, -10% -5%, 15% 0%;
+    filter: hue-rotate(60deg) brightness(1);
+  }
+}
+
+@keyframes grid-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes aurora-pulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+/* 加载器样式 */
+.loader {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 6rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.loader:before,
+.loader:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  animation: pulsOut 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.75));
+}
+
+.loader:before {
+  width: 100%;
+  padding-bottom: 100%;
+  box-shadow: inset 0 0 0 1rem var(--color-load);
+  animation-name: pulsIn;
+}
+
+.loader:after {
+  width: calc(100% - 2rem);
+  padding-bottom: calc(100% - 2rem);
+  box-shadow: 0 0 0 0 var(--color-load);
+}
+
+@keyframes pulsIn {
+  0% {
+    box-shadow: inset 0 0 0 1rem var(--color-load);
+    opacity: 1;
+  }
+
+  50%,
+  100% {
+    box-shadow: inset 0 0 0 0 var(--color-load);
+    opacity: 0;
+  }
+}
+
+@keyframes pulsOut {
+  0%,
+  50% {
+    box-shadow: 0 0 0 0 var(--color-load);
+    opacity: 0;
+  }
+
+  100% {
+    box-shadow: 0 0 0 1rem var(--color-load);
+    opacity: 1;
+  }
+}
+/* 加载器结束 */

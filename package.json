@@ -1,30 +1,17 @@
 {
   "name": "xrak-core",
-  "version": "4.1.0",
+  "version": "4.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "prisma:generate": "prisma generate --schema lib/db/prisma/schema.prisma",
-    "prisma:migrate": "prisma migrate dev --schema lib/db/prisma/schema.prisma",
-    "prisma:studio": "prisma studio --schema lib/db/prisma/schema.prisma"
-  },
-  "prisma": {
-    "schema": "lib/db/prisma/schema.prisma"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
-    "bcryptjs": "^3.0.3",
-    "jose": "^6.1.2",
-    "mongodb": "^7.0.0",
-    "mysql2": "^3.15.3",
     "next": "16.0.3",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "redis": "^5.9.0",
-    "uuid": "^13.0.0"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -33,7 +20,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
-    "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

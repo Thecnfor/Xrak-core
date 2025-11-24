@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import localFont from "next/font/local";
 import "./globals.css";
-import "./styles/tokens.css";
-import "./styles/components.css";
-import "./styles/animate.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,18 +10,6 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
-
-const hanSans = localFont({
-  variable: "--font-han-sans",
-  src: [
-    { path: "../public/fonts/harmonyos-sans/SourceHanSansSC-Light.woff2", weight: "300", style: "normal" },
-    { path: "../public/fonts/harmonyos-sans/SourceHanSansSC-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/harmonyos-sans/SourceHanSansSC-Medium.woff2", weight: "500", style: "normal" },
-    { path: "../public/fonts/harmonyos-sans/SourceHanSansSC-Bold.woff2", weight: "700", style: "normal" },
-  ],
-  display: "swap",
-  fallback: ["system-ui", "Segoe UI", "Arial", "Helvetica", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -39,8 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
-      <body className={`${hanSans.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {children}
       </body>
     </html>

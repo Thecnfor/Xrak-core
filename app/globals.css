@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+:root {
+  --font-sans: var(--font-source-han-sans-sc);
+  --font-mono: var(--font-geist-mono);
+}
+
+code, pre {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}

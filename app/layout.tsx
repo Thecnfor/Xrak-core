@@ -44,6 +44,19 @@ const sourceHanSansSC = localFont({
   variable: "--font-source-han-sans-sc",
   display: "swap",
   preload: true,
+  fallback: [
+    "-apple-system",
+    "BlinkMacSystemFont",
+    "Segoe UI",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Noto Sans CJK SC",
+    "Noto Sans",
+    "Helvetica",
+    "Arial",
+    "sans-serif",
+  ],
 });
 
 // 元数据
@@ -67,7 +80,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${sourceHanSansSC.variable} antialiased`}
+        className={`${sourceHanSansSC.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>

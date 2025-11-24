@@ -87,12 +87,12 @@ export function composeMetadata(
     // 站点级图标（按需替换真实路径）
     icons: {
       icon: [
-        { url: "/favicon.ico" },
-        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-        { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+        { url: "./favicon.ico" },
+        { url: "./favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "./favicon-16x16.png", sizes: "16x16", type: "image/png" },
       ],
-      apple: [{ url: "/apple-touch-icon.png" }],
-      shortcut: [{ url: "/favicon.ico" }],
+      apple: [{ url: "./apple-touch-icon.png" }],
+      shortcut: [{ url: "./favicon.ico" }],
     },
 
     // SEO 索引策略：非生产默认 noindex，以避免测试环境被抓取

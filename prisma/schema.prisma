@@ -6,9 +6,17 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../lib/generated/prisma"
+  output   = "./generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+}
+
+// 这是一个示例模型
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
 }

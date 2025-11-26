@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["./*"],
       "@/components/*": ["./components/*"],
-      "@/lib/*": ["./lib/*"]
+      "@/lib/*": ["./lib/*"],
+      "@/prisma/*": ["./prisma/*"]
     }
   },
   "include": [
